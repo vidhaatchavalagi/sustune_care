@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { 
+  ArrowLeft, 
   Building2, 
   ShieldCheck, 
   FileText, 
@@ -7,21 +9,36 @@ import {
   Users, 
   Receipt, 
   CheckCircle2, 
-  AlertCircle, 
   Play, 
+  Pause, 
+  Volume2, 
+  VolumeX, 
+  Maximize2, 
   ArrowRight, 
   Camera, 
   Droplets, 
   Zap, 
   FileCheck, 
-  ChevronDown, 
-  ChevronUp, 
-  HelpCircle,
-  Clock,
-  Sparkles,
-  MapPin,
-  Lock
+  Clock, 
+  Sparkles, 
+  MapPin, 
+  Lock, 
+  DollarSign, 
+  X,
+  PhoneCall,
+  Key
 } from 'lucide-react';
+// Official crisp WhatsApp vector icon
+const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+  <svg 
+    className={className} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.456 5.711 1.457h.004c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+  </svg>
+);
 import { SAMPLE_INSPECTION_REPORT } from '../data/mockData';
 import { useCurrency } from '../context/CurrencyContext';
 import { useVideoMetadata } from '../hooks/useVideoMetadata';
@@ -31,455 +48,726 @@ interface AegisPageProps {
   onOpenVideoModal: (videoSrc: string, title: string, subtitle?: string) => void;
 }
 
+interface AegisServiceItem {
+  id: string;
+  name: string;
+  badge: string;
+  icon: React.ElementType;
+  shortBullets: string[];
+  sla: string;
+  realEstateBenchmark: string;
+  details: {
+    overview: string;
+    protocols: string[];
+    benchmarkStandards: string;
+    whatNriReceives: string;
+  };
+}
+
 export const AegisPage: React.FC<AegisPageProps> = ({
   onOpenConsultModal,
   onOpenVideoModal,
 }) => {
   const { formatPrice } = useCurrency();
-  const [activeCategory, setActiveCategory] = useState<string>('All');
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const videoMeta = useVideoMetadata('/videos/aegis_overview.mp4');
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const categories = ['All', 'Structural', 'Electrical', 'Plumbing', 'Carpentry & Fixtures', 'Safety & Compliance'];
+  // Click-to-reveal services state
+  const [activeServiceId, setActiveServiceId] = useState<string>('tenant-vetting');
+  // Read More Modal state
+  const [readMoreModalData, setReadMoreModalData] = useState<AegisServiceItem | null>(null);
 
-  const filteredItems = activeCategory === 'All' 
-    ? SAMPLE_INSPECTION_REPORT.items 
-    : SAMPLE_INSPECTION_REPORT.items.filter(i => i.category === activeCategory);
-
-  const faqs = [
+  const services: AegisServiceItem[] = [
     {
-      q: 'How does Sustune verify prospective tenants for my Indian property?',
-      a: 'We enforce an institutional 5-tier screening process: CIBIL credit score analysis, current corporate employment validation (with HR letters), permanent address verification, Aadhaar biometric verification, and mandatory police verification with the local police station before the lease is executed.',
+      id: 'tenant-vetting',
+      name: 'Corporate Tenant Scouting & Biometric Leases',
+      badge: 'CIBIL > 750 Only',
+      icon: Users,
+      sla: 'Average 18-Day Placement SLA',
+      realEstateBenchmark: 'Godrej Properties & Sobha Premier Executive Tenants',
+      shortBullets: [
+        'Exclusive corporate tenant scouting (Google, Microsoft, Amazon, Deloitte MNC expats)',
+        'Mandatory 5-tier KYC: CIBIL credit score, HR validation, permanent address check',
+        'Official police verification filed with the local police jurisdiction prior to move-in',
+        'Lawyer-drafted biometric digital lease agreement with strong eviction covenants',
+      ],
+      details: {
+        overview:
+          'Unorganized brokers often place unvetted tenants who default on rent or refuse to vacate. Aegis enforces institutional corporate tenant vetting benchmarked against luxury developer standards (Godrej, My Home, Sobha), ensuring complete legal safeguards for NRI owners.',
+        protocols: [
+          'Direct employment confirmation with corporate HR (salary slips + company ID)',
+          'Minimum CIBIL credit score threshold of 750+',
+          'Aadhaar biometric authentication and local police station clearance documentation',
+          'Registered 11-month lease with automatic annual 5% escalation and dispute jurisdiction clauses',
+        ],
+        benchmarkStandards: 'Benchmarked against Godrej Living and Sobha Asset Care executive corporate tenant agreements.',
+        whatNriReceives: 'Tenant verification dossier, CIBIL credit report, police stamp acknowledgment, and digitally signed lease agreement PDF.',
+      },
     },
     {
-      q: 'How is rent remitted to my overseas bank account or Indian NRE/NRO account?',
-      a: 'Rent is collected into our RERA-compliant escrow trust account on the 1st of every month. After deducting applicable TDS and approved maintenance expenses, proceeds are disbursed on the 5th of each month directly into your designated NRO or NRE account. We provide annual Form 15CA and 15CB documentation prepared by chartered accountants for hassle-free repatriation.',
+      id: 'rent-escrow',
+      name: 'Automated Rent Escrow & Form 15CA/15CB Repatriation',
+      badge: 'Disbursed by 5th of Month',
+      icon: Receipt,
+      sla: '100% On-Time Rent Guarantee',
+      realEstateBenchmark: 'RERA-Compliant Escrow Banking Framework',
+      shortBullets: [
+        'Rent collected into RERA-compliant escrow trust account on the 1st of every month',
+        'Net proceeds disbursed on the 5th directly to your NRO or NRE account in India',
+        'Automated payment gateway with zero manual bank chasing or awkward tenant calls',
+        'Annual Form 15CA & 15CB documentation prepared by Chartered Accountants for hassle-free repatriation',
+      ],
+      details: {
+        overview:
+          'Collecting rent across different time zones is stressful. With Aegis, your tenant pays into an institutional escrow. We automate reconciliation, deduct approved maintenance or society dues with receipts, and disburse on the 5th without delay.',
+        protocols: [
+          'Automated recurring mandates (e-NACH / UPI Autopay / wire transfer)',
+          'Instant penalty triggers and legal notices if rent is delayed past the 3rd of the month',
+          'FEMA compliant foreign remittance documentation prepared by partner CAs for repatriation to US/UK/UAE',
+        ],
+        benchmarkStandards: 'Institutional banking escrow mechanism matching tier-1 REIT and commercial property funds.',
+        whatNriReceives: 'Monthly rental ledger statement, TDS withholding certificates, and CA-certified Form 15CA/15CB repatriation pack.',
+      },
     },
     {
-      q: 'What happens if a tenant requests a major repair or appliances malfunction?',
-      a: 'Our field technicians conduct a physical assessment within 24 hours. If repair costs are below your pre-authorized approval limit (e.g. ₹5,000), we fix it immediately and upload the timestamped receipt. For larger repairs or replacements, we submit 2 itemized quotes to your client portal for 1-click digital approval. We charge strictly zero contractor markups.',
+      id: 'forensic-audits',
+      name: '80-Point Quarterly Forensic Audits & 4K Walkthroughs',
+      badge: 'Sensor-Assisted Audits',
+      icon: Camera,
+      sla: 'Quarterly Laser & Moisture Audits',
+      realEstateBenchmark: 'Quality Audits Benchmarked to Sobha Construction Standards',
+      shortBullets: [
+        '80-point sensor inspection covering structural dampness, electrical breakers, and concealed plumbing',
+        'Infrared moisture detectors catch hairline wall seepage before it ruins expensive woodwork',
+        'Timestamped 4K ultra-HD video walkthrough and 50+ high-res inspection photos',
+        'Interactive digital report uploaded to client portal with repair severity index',
+      ],
+      details: {
+        overview:
+          'Hidden water seepage from monsoon rains or calcified plumbing valves can destroy hundreds of thousands in interior woodwork and granite finishes. Our field engineers conduct forensic quarterly audits to protect your asset value.',
+        protocols: [
+          'Infrared thermal scanning for wall dampness and pipe leakage behind tiles',
+          'MCB electrical breaker trip timing tests and earth resistance calibration (< 2 ohms)',
+          'Modular kitchen Blum hinge realignments and balcony drainage slope checks',
+          'Pre-monsoon and post-monsoon comprehensive structural audits',
+        ],
+        benchmarkStandards: 'Inspection metrics inspired by Sobha Ltd’s legendary German engineering precision audits.',
+        whatNriReceives: 'Interactive portal audit report with 50+ zoomable photos, 4K walkthrough video, and sensor score breakdown (0-100%).',
+      },
     },
     {
-      q: 'Can Sustune manage property taxes, Khata mutation, and society maintenance payments?',
-      a: 'Yes. Our legal and municipal liaison stewards track BBMP / GHMC / MCGM property tax schedules, handle municipal Khata transfers, attend society AGM meetings as your proxy, and disburse society maintenance fees from rental escrow.',
+      id: 'maintenance',
+      name: 'Zero-Markup Turnkey Maintenance & Repairs',
+      badge: 'Strict 0% Contractor Markup',
+      icon: Wrench,
+      sla: '24-Hour Emergency Response SLA',
+      realEstateBenchmark: 'Godrej Living Facility Management Standards',
+      shortBullets: [
+        'In-house certified plumbers, electricians, carpenters, and waterproofing specialists',
+        'Zero vendor markups—you pay the exact verified technician invoice, nothing more',
+        'Minor repairs fixed immediately within pre-authorized emergency threshold',
+        'Major repairs submitted with 2 itemized quotes for 1-click digital portal approval',
+      ],
+      details: {
+        overview:
+          'Local contractors notoriously overcharge absentee NRI owners. We provide transparent facility maintenance with strictly zero percentage markup. You see original invoices, technician work logs, and before-and-after photo evidence.',
+        protocols: [
+          'Pre-approved threshold (e.g., ₹5,000) for instant emergency plumbing/electrical fixes',
+          'Competitive dual-quote bidding for deep painting, deep cleaning, or appliance replacement',
+          'Verified original tax invoices uploaded directly to your portal ledger',
+        ],
+        benchmarkStandards: 'Standardized rate cards aligned with Godrej and My Home facility management contracts.',
+        whatNriReceives: 'Before-and-after photo comparison, digital technician timesheet, and verified zero-markup vendor invoice.',
+      },
+    },
+    {
+      id: 'legal-liaisons',
+      name: 'Khata Mutation, Property Tax & Society AGM Proxy',
+      badge: 'Municipal & Legal Stewardship',
+      icon: FileCheck,
+      sla: 'Dedicated Government Liaison',
+      realEstateBenchmark: 'Prestige & My Home Gated Society Representation',
+      shortBullets: [
+        'On-time property tax payments (BBMP, GHMC, MCGM, DTCP) with verified government challans',
+        'Municipal Khata mutation, title verification, and Encumbrance Certificate (EC) updates',
+        'Attendance at gated community Annual General Meetings (AGM) as your official proxy',
+        'Direct coordination with Resident Welfare Associations (RWA) for parking and society dues',
+      ],
+      details: {
+        overview:
+          'Dealing with Indian municipal offices and resident welfare association politics from abroad is frustrating. Our legal and municipal stewards handle paperwork, attend society meetings, and ensure all property taxes remain spotless.',
+        protocols: [
+          'Annual Encumbrance Certificate (EC) retrieval from the Sub-Registrar office to ensure clean title',
+          'Tracking BBMP/GHMC property tax rebate periods to secure 5% municipal discounts',
+          'Voting representation at society AGM meetings following your written instructions',
+        ],
+        benchmarkStandards: 'Standard legal stewardship practiced by institutional real estate trusts.',
+        whatNriReceives: 'Official municipal tax payment challans, updated EC certificates, and typed AGM society meeting minutes.',
+      },
     },
   ];
 
+  const currentService = services.find((s) => s.id === activeServiceId) || services[0];
+
   return (
-    <div className="bg-white">
-      {/* Hero Banner with atmospheric lighting */}
-      <section className="relative hero-radial-bg py-16 lg:py-24 border-b border-slate-200 overflow-hidden">
-        {/* Ambient background light orbs */}
-        <div className="absolute top-10 right-10 w-96 h-96 bg-[#0073B7]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-5 left-10 w-96 h-96 bg-[#C99738]/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="bg-white min-h-screen">
+      
+      {/* Top Breadcrumb & Benchmark Anchor */}
+      <div className="bg-slate-50 border-b border-slate-200/80 py-3 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-[#0D3B66] bg-white hover:bg-[#0073B7] hover:text-white transition-all shadow-xs border border-slate-200 group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span>&larr; Back to Home</span>
+          </Link>
 
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+            <span className="text-[#0073B7] font-bold">Real Estate Benchmarks:</span>
+            <span className="hidden sm:inline">Godrej Properties &bull; My Home Group &bull; Sobha Ltd &bull; Prestige</span>
+            <span className="sm:hidden">Godrej &bull; My Home &bull; Sobha</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Screen: More Pictures, Less Text, Real Estate Benchmark */}
+      <section className="relative hero-radial-bg pt-8 pb-14 lg:pt-12 lg:pb-20 border-b border-slate-200 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 text-[#0073B7] text-xs font-black uppercase tracking-wider mb-4 border border-sky-200 shadow-xs">
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Aegis Real Estate Stewardship</span>
-            </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0D3B66] font-heading tracking-tight leading-tight">
-              Institutional Asset Management for High-Yield Indian Real Estate
-            </h1>
-
-            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
-              Designed specifically for NRIs who refuse to settle for unorganized brokers. We provide corporate tenant vetting, automated rent escrow remittance, 80-point quarterly forensic audits, and zero-markup turnkey maintenance in Bengaluru, Hyderabad &amp; Delhi NCR.
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="px-6 py-3.5 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-lg transition-all cursor-pointer"
-              >
-                Schedule Property Evaluation
-              </button>
-
-              <button
-                onClick={() => onOpenVideoModal('/videos/aegis_overview.mp4', 'Aegis Property Stewardship', 'Forensic Asset Management for NRI Landlords')}
-                className="flex items-center gap-2.5 px-5 py-3.5 rounded-xl text-xs sm:text-sm font-bold text-[#0D3B66] bg-white border border-[#0073B7]/30 hover:bg-sky-50 transition-colors cursor-pointer shadow-xs"
-              >
-                <div className="w-5 h-5 rounded-full bg-[#0073B7] text-white flex items-center justify-center">
-                  <Play className="w-2.5 h-2.5 fill-current ml-0.5" />
-                </div>
-                <span>Watch Division Reel ({videoMeta.formattedDuration})</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* The 5 Pillars of Aegis */}
-      <section className="py-20 lg:py-24 bg-gradient-to-b from-[#F8FAFC] via-white to-[#F8FAFC] border-b border-slate-200 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0D3B66] font-heading">
-              The Five Disciplines of Aegis Stewardship
-            </h2>
-            <p className="mt-3.5 text-sm sm:text-base text-slate-600">
-              Every property entrusted to Sustune Care is administered under strict institutional operating standards.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-[0_10px_30px_rgba(0,0,0,0.03)] space-y-3.5 hover:border-[#0073B7] hover:shadow-lg transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-[#0073B7] flex items-center justify-center shadow-xs">
-                <Users className="w-6 h-6" />
+            {/* Left Headline & Concise CTAs */}
+            <div className="lg:col-span-7 space-y-5">
+              
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 text-[#0073B7] text-xs font-black uppercase tracking-wider border border-sky-200 shadow-xs">
+                <Building2 className="w-4 h-4" />
+                <span>Aegis Property Stewardship &bull; Real Estate Benchmark</span>
               </div>
-              <h3 className="text-lg font-black text-slate-900 font-heading">
-                1. Corporate Tenant Scouting
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                We market your asset to multinational corporate executives and vetted diaspora professionals. Includes CIBIL credit scores, employment background checks, and local police verification.
-              </p>
-            </div>
 
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-[0_10px_30px_rgba(0,0,0,0.03)] space-y-3.5 hover:border-[#0073B7] hover:shadow-lg transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-[#0073B7] flex items-center justify-center shadow-xs">
-                <Receipt className="w-6 h-6" />
+              <h1 className="text-3xl sm:text-4xl xl:text-5xl font-black text-[#0D3B66] font-heading tracking-tight leading-[1.15]">
+                Institutional Asset Management <br />
+                <span className="text-[#0073B7]">For High-Yield Indian Real Estate</span> <br />
+                <span className="text-slate-800">Owned by Global NRIs.</span>
+              </h1>
+
+              {/* Brief Text - Goal is to get visitor to call/enquire, not read a long document */}
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+                Benchmarked against premier developer management portals (<strong className="text-slate-900 font-bold">Godrej, My Home, Sobha</strong>). Corporate tenant vetting, rent escrow remittance by the 5th, 80-point quarterly forensic audits, and zero-markup turnkey maintenance in Bengaluru, Hyderabad &amp; Delhi NCR.
+              </p>
+
+              {/* Quick Action CTAs */}
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => onOpenConsultModal('aegis')}
+                  className="px-6 py-3.5 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-[0_8px_20px_rgba(0,115,183,0.3)] transition-all cursor-pointer flex items-center gap-2 group"
+                >
+                  <span>Schedule Free Asset Evaluation</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                <a
+                  href="tel:+918007878863"
+                  className="px-4 py-3.5 rounded-xl text-xs sm:text-sm font-bold text-[#0D3B66] bg-white border border-[#0073B7]/40 hover:bg-sky-50 shadow-xs transition-colors flex items-center gap-2"
+                >
+                  <PhoneCall className="w-4 h-4 text-[#0073B7]" />
+                  <span>Call Property Desk</span>
+                </a>
+
+                <a
+                  href="https://wa.me/918007878863?text=Hi%20Aegis%20Team%2C%20I%20am%20an%20NRI%20looking%20for%20property%20stewardship%20in%20India."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-colors"
+                  aria-label="WhatsApp"
+                >
+                  <WhatsAppIcon className="w-5 h-5 fill-emerald-600 text-emerald-600" />
+                </a>
               </div>
-              <h3 className="text-lg font-black text-slate-900 font-heading">
-                2. Escrow Rent &amp; Tax Compliance
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Rent is paid directly into escrow on the 1st and remitted to your NRE/NRO account by the 5th. We handle 31.2% NRI TDS deductions and assist with Form 15CA/15CB CA certification.
-              </p>
-            </div>
 
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-[0_10px_30px_rgba(0,0,0,0.03)] space-y-3.5 hover:border-[#0073B7] hover:shadow-lg transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-[#0073B7] flex items-center justify-center shadow-xs">
-                <FileText className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-black text-slate-900 font-heading">
-                3. Quarterly 80-Point Inspections
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Our certified civil engineers audit wall dampness with ultrasonic sensors, inspect concealed electrical wiring, and test plumbing valves to prevent costly hidden structural damage.
-              </p>
-            </div>
-
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-[0_10px_30px_rgba(0,0,0,0.03)] space-y-3.5 hover:border-[#0073B7] hover:shadow-lg transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-[#0073B7] flex items-center justify-center shadow-xs">
-                <Wrench className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-black text-slate-900 font-heading">
-                4. Turnkey Maintenance &amp; Fit-Outs
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Full restoration between tenancies, modular kitchen deep cleaning, and appliance servicing. You review verified invoices on your portal before approving a single rupee.
-              </p>
-            </div>
-
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-[0_10px_30px_rgba(0,0,0,0.03)] space-y-3.5 hover:border-[#0073B7] hover:shadow-lg transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-[#0073B7] flex items-center justify-center shadow-xs">
-                <FileCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-black text-slate-900 font-heading">
-                5. Legal &amp; Municipal Governance
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Biometric digital lease renewals, municipal property tax filings (BBMP, GHMC, MCGM), Khata certificate updates, and society representation to ensure 100% legal compliance.
-              </p>
-            </div>
-
-            <div className="p-7 rounded-3xl bg-gradient-to-br from-[#0D3B66] via-[#082542] to-[#041021] text-white shadow-xl border border-[#C99738]/50 flex flex-col justify-between">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-[#C99738]">
-                  Dual-Shield Synergy
+              {/* Real Estate Trust Points */}
+              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-600 font-semibold">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0073B7]" />
+                  <span>Rent Disbursed by 5th</span>
                 </span>
-                <h3 className="text-lg font-black font-heading mt-1.5 mb-2">
-                  Have Parents in India as Well?
-                </h3>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Combine Aegis Property Stewardship with Sparsh Parental Healthcare to unlock unified reporting and a 15% discount across all services.
-                </p>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0073B7]" />
+                  <span>80-Point Sensor Audit</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0073B7]" />
+                  <span>FEMA Form 15CA/15CB Escrow</span>
+                </span>
               </div>
 
-              <button
-                onClick={() => onOpenConsultModal('bundle')}
-                className="mt-5 w-full py-3 px-4 rounded-xl text-xs font-black text-[#082542] bg-gradient-to-r from-[#F59E0B] to-[#C99738] hover:brightness-110 shadow-md transition-all cursor-pointer"
-              >
-                Inquire About Dual-Shield Bundle
-              </button>
             </div>
+
+            {/* Right Marketing Visual (Godrej/Sobha/My Home Benchmark Photo Composition) */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,115,183,0.2)] border-2 border-sky-200/80 bg-slate-900 group">
+                <img
+                  src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=80"
+                  alt="Luxury modern gated high-rise residential towers in Bengaluru and Hyderabad"
+                  className="w-full h-[360px] sm:h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
+                  loading="eager"
+                />
+
+                {/* Ambient photo gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#041021]/90 via-[#041021]/20 to-transparent pointer-events-none" />
+
+                {/* Floating Real Estate Benchmark Badge */}
+                <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-300 shadow-md flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0073B7] animate-ping" />
+                  <span className="text-[11px] font-black text-[#0D3B66]">Godrej &bull; My Home &bull; Sobha Communities</span>
+                </div>
+
+                {/* Floating Asset Score Chip */}
+                <div className="absolute bottom-4 left-4 right-4 z-10 p-3.5 bg-white/95 backdrop-blur-md rounded-2xl border border-sky-300/80 shadow-lg flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-[#0073B7]">
+                      <Key className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-black text-[#0D3B66]">Prestige High Fields &bull; Flat 1802</div>
+                      <div className="text-[11px] text-slate-500">Corporate Tenant Placed &bull; 94% Audit Score</div>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded text-[10px] font-black bg-emerald-100 text-[#0A8754]">
+                    Verified
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* Premier Managed Micro-Markets Bar */}
+      <section className="py-8 bg-slate-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-4">
+            <span className="text-xs font-black text-slate-500 uppercase tracking-wider">
+              High-Yield Managed Micro-Markets &bull; Premier Gated Communities
+            </span>
+          </div>
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 text-slate-700 font-bold text-xs sm:text-sm">
+            {[
+              'Bengaluru (Whitefield & Indiranagar)',
+              'Hyderabad (Financial District & Hitec City)',
+              'Delhi NCR (Golf Course Rd & DLF 5)',
+              'Pune (Koregaon Park & Baner)',
+              'Chennai (OMR & Boat Club)',
+            ].map((m) => (
+              <span key={m} className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#0073B7]" />
+                <span>{m}</span>
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Interactive Digital Inspection Report Viewer */}
-      <section className="py-20 lg:py-24 bg-white border-b border-slate-200">
+      {/* =========================================================================
+          REQUIREMENT 2: PRESENT SERVICES AS SHORT BULLET POINTS ON CLICK
+          + INCLUDE "READ MORE" LINKS FOR DETAILS
+          ========================================================================= */}
+      <section className="py-16 sm:py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-black uppercase tracking-wider mb-3.5 border border-emerald-200">
-              <Camera className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Interactive Client Feature</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0D3B66] font-heading tracking-tight">
-              Sample 80-Point Digital Inspection Audit
+            <span className="text-xs font-black text-[#0073B7] uppercase tracking-wider block mb-2">
+              Click To Explore Each Discipline
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#0D3B66] font-heading">
+              The Five Disciplines of Aegis Stewardship
             </h2>
-            <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed">
-              Explore how Sustune Care field engineers audit and report on your property every quarter. Every check is timestamped, geofenced, and accessible via your client portal.
+            <p className="mt-2 text-sm sm:text-base text-slate-600">
+              Click any discipline below to view key bullet points, operational SLAs, and legal documentation.
             </p>
           </div>
 
-          {/* Inspection Report Container */}
-          <div className="max-w-4xl mx-auto rounded-3xl bg-slate-50 border border-slate-300/80 shadow-2xl overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* Report Header */}
-            <div className="bg-gradient-to-r from-[#0D3B66] via-[#082542] to-[#0D3B66] text-white p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-[#C99738] text-[#082542]">
-                    Report Ref: {SAMPLE_INSPECTION_REPORT.propertyId}
-                  </span>
-                  <span className="text-xs text-amber-200 font-medium">{SAMPLE_INSPECTION_REPORT.inspectionDate}</span>
-                </div>
-                <h3 className="text-lg sm:text-2xl font-black font-heading mt-1.5">
-                  {SAMPLE_INSPECTION_REPORT.propertyName}
-                </h3>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  {SAMPLE_INSPECTION_REPORT.location}
-                </p>
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Inspected By: <strong className="text-white">{SAMPLE_INSPECTION_REPORT.inspectorName}</strong>
-                </p>
-              </div>
-
-              {/* Health Score Pill */}
-              <div className="p-4 rounded-2xl bg-[#082542] border border-[#C99738]/50 text-center shrink-0 shadow-lg">
-                <span className="text-[10px] uppercase font-bold text-slate-300 tracking-wider block">
-                  Property Asset Health
-                </span>
-                <span className="text-3xl font-black text-[#C99738] font-heading">
-                  {SAMPLE_INSPECTION_REPORT.overallScore} / 100
-                </span>
-                <span className="text-[10px] font-bold text-emerald-400 block mt-0.5">
-                  Institutional Grade: Optimal
-                </span>
-              </div>
-            </div>
-
-            {/* Category Filter Tabs */}
-            <div className="p-4 bg-slate-100 border-b border-slate-200 flex flex-wrap gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    activeCategory === cat
-                      ? 'bg-[#0073B7] text-white shadow-xs'
-                      : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* Checklist Items */}
-            <div className="p-6 divide-y divide-slate-200">
-              {filteredItems.map((item) => (
-                <div key={item.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                        {item.category}
-                      </span>
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${
-                          item.status === 'Pass'
-                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                            : 'bg-amber-100 text-amber-800 border border-amber-200'
+            {/* Left: Interactive Service Tabs (Click to select) */}
+            <div className="lg:col-span-5 space-y-2.5">
+              {services.map((s) => {
+                const IconComponent = s.icon;
+                const isSelected = s.id === activeServiceId;
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() => setActiveServiceId(s.id)}
+                    className={`w-full p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-sky-50 to-white border-[#0073B7] shadow-md ring-2 ring-[#0073B7]/20'
+                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div
+                        className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected
+                            ? 'bg-[#0073B7] text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-600'
                         }`}
                       >
-                        {item.status}
-                      </span>
+                        <IconComponent className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-black uppercase tracking-wider text-[#0073B7]">
+                          {s.badge}
+                        </div>
+                        <div className={`text-sm font-extrabold font-heading ${isSelected ? 'text-[#0D3B66]' : 'text-slate-800'}`}>
+                          {s.name}
+                        </div>
+                      </div>
                     </div>
+                    <ArrowRight className={`w-4 h-4 transition-transform ${isSelected ? 'text-[#0073B7] translate-x-1' : 'text-slate-400'}`} />
+                  </button>
+                );
+              })}
+            </div>
 
-                    <h4 className="text-sm font-bold text-slate-900 font-heading">
-                      {item.item}
-                    </h4>
-
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {item.notes}
-                    </p>
+            {/* Right: Short Bullet Points on Click + "Read More" Detail Link */}
+            <div className="lg:col-span-7 bg-slate-50 rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.04)]">
+              
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-sky-100 text-[#0073B7] flex items-center justify-center">
+                    <currentService.icon className="w-6 h-6" />
                   </div>
-
-                  <div className="shrink-0 flex sm:flex-col items-center sm:items-end gap-2 text-right">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0073B7] bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-100">
-                      <Camera className="w-3 h-3" />
-                      <span>HD Audit Photo Logged</span>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#0073B7] bg-sky-100/80 px-2.5 py-0.5 rounded-full">
+                      {currentService.badge}
                     </span>
+                    <h3 className="text-lg sm:text-xl font-black text-[#0D3B66] font-heading mt-1">
+                      {currentService.name}
+                    </h3>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            {/* Interactive Footer */}
-            <div className="p-4 bg-slate-100 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
-              <span className="flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>Geofenced &amp; Signed via Sustune Mobile Field App</span>
-              </span>
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="text-xs font-bold text-[#0073B7] hover:underline"
-              >
-                Request a Free 80-Point Inspection on Your Property &rarr;
-              </button>
-            </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-white border border-[#0073B7]/40 text-[#0073B7] shadow-xs">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{currentService.sla}</span>
+                </span>
+              </div>
 
-          </div>
-
-        </div>
-      </section>
-
-      {/* Pricing Comparison Table */}
-      <section className="py-20 lg:py-24 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0D3B66] font-heading">
-              Transparent Aegis Pricing
-            </h2>
-            <p className="mt-3 text-sm sm:text-base text-slate-600">
-              No hidden broker kickbacks. Clear, audited fee structures.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Tier 1 */}
-            <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 font-heading">Tenant Placement Only</h3>
-                <p className="text-xs text-slate-500 mt-1">For landlords who prefer handling monthly rent directly.</p>
-                <div className="my-6">
-                  <div className="text-2xl font-extrabold text-[#0D3B66] font-heading">15 Days Rent</div>
-                  <div className="text-xs text-slate-500">One-time fee upon successful lease execution</div>
-                </div>
-                <ul className="space-y-2.5 text-xs text-slate-700">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> Multi-portal syndicated listings</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> Accompanied physical viewings</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> CIBIL &amp; corporate KYC checks</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> Police verification paperwork</li>
+              {/* Short Bullet Points Displayed on Click */}
+              <div className="py-6 space-y-3">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                  Key Discipline Highlights:
+                </span>
+                <ul className="space-y-3">
+                  {currentService.shortBullets.map((bullet, idx) => (
+                    <li key={idx} className="flex items-start gap-3 bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-xs">
+                      <CheckCircle2 className="w-5 h-5 text-[#0073B7] shrink-0 mt-0.5" />
+                      <span className="text-xs sm:text-sm font-semibold text-slate-700 leading-relaxed">
+                        {bullet}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="mt-8 w-full py-3 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
-              >
-                Choose Tenant Placement
-              </button>
-            </div>
 
-            {/* Tier 2: Popular */}
-            <div className="p-6 sm:p-7 rounded-3xl bg-[#0D3B66] text-white border-2 border-[#C99738] shadow-2xl relative flex flex-col justify-between">
-              <span className="absolute -top-3 right-6 px-3 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#C99738] text-[#082542] shadow-sm">
-                Most Popular for NRIs
-              </span>
-              <div>
-                <h3 className="text-lg font-bold font-heading">Complete Aegis Stewardship</h3>
-                <p className="text-xs text-amber-200/90 mt-1">Total hands-off asset governance and peace of mind.</p>
-                <div className="my-6">
-                  <div className="text-3xl font-extrabold text-white font-heading">8% <span className="text-xs font-normal text-slate-300">of monthly rent</span></div>
-                  <div className="text-xs text-slate-300">Min. $60 / mo (billed quarterly)</div>
-                </div>
-                <ul className="space-y-2.5 text-xs text-slate-200">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C99738]" /> Everything in Tenant Placement</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C99738]" /> Escrow rent payout on the 5th</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C99738]" /> Quarterly 80-point inspection audits</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C99738]" /> Zero contractor markup guarantee</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C99738]" /> Annual Form 15CA/15CB assistance</li>
-                </ul>
-              </div>
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="mt-8 w-full py-3.5 rounded-xl text-xs font-bold text-[#082542] bg-[#C99738] hover:bg-[#F59E0B] transition-colors shadow-lg cursor-pointer"
-              >
-                Enroll in Complete Aegis
-              </button>
-            </div>
-
-            {/* Tier 3: Portfolio */}
-            <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 font-heading">VIP Portfolio Stewardship</h3>
-                <p className="text-xs text-slate-500 mt-1">For investors holding 3+ units across Indian metros.</p>
-                <div className="my-6">
-                  <div className="text-2xl font-extrabold text-[#0D3B66] font-heading">Custom Retainer</div>
-                  <div className="text-xs text-slate-500">Volume discounted rates (6.5% - 7%)</div>
-                </div>
-                <ul className="space-y-2.5 text-xs text-slate-700">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> Dedicated Senior Portfolio Director</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> Multi-city consolidated NRI tax ledger</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> Turnkey interior furnishing oversight</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#0073B7]" /> Society AGM voting representation</li>
-                </ul>
-              </div>
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="mt-8 w-full py-3 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
-              >
-                Request Portfolio Proposal
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQs */}
-      <section className="py-20 lg:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0D3B66] font-heading">
-              Aegis Real Estate FAQ
-            </h2>
-            <p className="mt-2 text-xs sm:text-sm text-slate-500">
-              Clear answers to the most common questions asked by NRI property owners.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="border border-slate-200 rounded-2xl overflow-hidden transition-all"
-              >
+              {/* Action Buttons: "Read More" link for details + Book Service */}
+              <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
                 <button
-                  type="button"
-                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full p-4 sm:p-5 text-left flex justify-between items-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
+                  onClick={() => setReadMoreModalData(currentService)}
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-[#0073B7] hover:text-[#0D3B66] bg-sky-50 hover:bg-sky-100 px-4 py-2.5 rounded-xl transition-colors cursor-pointer border border-sky-200"
                 >
-                  <span className="text-sm font-bold text-slate-900 font-heading pr-4">
-                    {faq.q}
-                  </span>
-                  {openFaq === index ? (
-                    <ChevronUp className="w-5 h-5 text-[#0073B7] shrink-0" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-slate-400 shrink-0" />
-                  )}
+                  <FileText className="w-4 h-4" />
+                  <span>Read Full Audit Protocols &rarr;</span>
                 </button>
-                {openFaq === index && (
-                  <div className="p-4 sm:p-5 bg-white border-t border-slate-100 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {faq.a}
-                  </div>
-                )}
+
+                <button
+                  onClick={() => onOpenConsultModal('aegis')}
+                  className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Request Asset Evaluation</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
-            ))}
+
+            </div>
+
           </div>
 
-          <div className="mt-12 text-center">
-            <button
-              onClick={() => onOpenConsultModal('aegis')}
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-md transition-all cursor-pointer"
-            >
-              <span>Have a Specific Property Question? Talk to an Aegis Steward</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
         </div>
       </section>
+
+      {/* =========================================================================
+          REQUIREMENT 2 & 3: INCLUDE 1 SHORT VIDEO (UNOBSTRUCTED PRESENTATION)
+          Do not cover the moving video with large text blocks or heavy banners
+          ========================================================================= */}
+      <section className="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
+        
+        {/* Subtle background glow */}
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Header above the video - Clean & compact */}
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 text-xs font-black uppercase tracking-wider mb-2 border border-sky-500/30">
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Aegis Forensic Demonstration Film</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black font-heading text-white">
+              Aegis Property Stewardship in Action
+            </h2>
+            <p className="mt-2 text-xs sm:text-sm text-slate-300">
+              Unobstructed 1080p video demonstration showing 80-point sensor inspections, tenant key handovers, and escrow remittances in Hyderabad &amp; Bengaluru.
+            </p>
+          </div>
+
+          {/* Unobstructed Video Container - 16:9 ratio, crystal clear, no giant banners on top */}
+          <div className="relative max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.6)] border-2 border-sky-500/30 bg-black">
+            
+            <video
+              ref={videoRef}
+              src="/videos/aegis_overview.mp4"
+              playsInline
+              loop
+              controls
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              className="w-full aspect-video object-contain bg-black"
+            />
+
+            {/* Minimal top status badge (floating non-obstructive) */}
+            <div className="absolute top-4 left-4 pointer-events-none">
+              <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-black/70 text-sky-300 border border-sky-400/30 backdrop-blur-md">
+                Aegis Reel &bull; {videoMeta.formattedDuration}
+              </span>
+            </div>
+
+            {/* Quick Cinema Modal Trigger */}
+            <div className="absolute top-4 right-4 z-20">
+              <button
+                onClick={() => onOpenVideoModal('/videos/aegis_overview.mp4', 'Aegis Property Story', 'Forensic Asset Stewardship for NRI Landlords')}
+                className="p-2.5 rounded-full bg-black/70 hover:bg-[#0073B7] text-white border border-white/20 transition-all cursor-pointer backdrop-blur-md"
+                title="Watch in Cinema Mode"
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+            </div>
+
+          </div>
+
+          {/* Video Metadata & Real Estate Verification footer below video */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 max-w-4xl mx-auto text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-sky-400" />
+              <span>Filmed on-location in Prestige &amp; Sobha Gated Communities</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => onOpenConsultModal('aegis')}
+                className="font-bold text-[#C99738] hover:text-amber-300 flex items-center gap-1 cursor-pointer"
+              >
+                <span>Request Asset Inspection Portfolio</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* Transparent Asset Fee Structure */}
+      <section className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0D3B66] font-heading">
+              Predictable Institutional Asset Pricing
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-slate-600">
+              Standard 8% rental escrow retainer with strict zero contractor markup.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Vacant Asset Protection */}
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 font-heading">Vacant Asset Caretaker</h3>
+                <p className="text-xs text-slate-500 mt-1">For locked apartments, villas, and vacant land in India.</p>
+                <div className="my-5">
+                  <div className="text-3xl font-black text-[#0D3B66]">{formatPrice(45)} <span className="text-xs font-normal text-slate-500">/ mo</span></div>
+                  <div className="text-xs text-slate-400">Quarterly inspection retainer</div>
+                </div>
+                <ul className="space-y-2 text-xs text-slate-600 mb-6">
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Monthly biometric physical check-ins</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Utility bill &amp; property tax clearing</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Key safe-keeping &amp; anti-encroachment</li>
+                </ul>
+              </div>
+              <button
+                onClick={() => onOpenConsultModal('aegis')}
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors"
+              >
+                Inquire Vacant Care
+              </button>
+            </div>
+
+            {/* Tenanted Shield (Featured) */}
+            <div className="p-6 rounded-3xl bg-white border-2 border-[#0073B7] shadow-lg flex flex-col justify-between relative ring-2 ring-[#0073B7]/10">
+              <span className="absolute -top-3 right-6 px-3 py-1 rounded-full text-[10px] font-black uppercase bg-[#0073B7] text-white shadow-xs">
+                Most Popular
+              </span>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 font-heading">Tenanted Asset Shield</h3>
+                <p className="text-xs text-slate-500 mt-1">Complete hands-off tenancy and rental escrow stewardship.</p>
+                <div className="my-5">
+                  <div className="text-3xl font-black text-[#0073B7]">8% <span className="text-xs font-normal text-slate-500">of gross rent</span></div>
+                  <div className="text-xs text-slate-400">Min {formatPrice(50)}/mo &bull; Disbursed by 5th</div>
+                </div>
+                <ul className="space-y-2 text-xs text-slate-600 mb-6">
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> CIBIL &gt; 750 corporate tenant scouting</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Automated escrow rent collection</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> 80-point quarterly sensor audits &amp; videos</li>
+                </ul>
+              </div>
+              <button
+                onClick={() => onOpenConsultModal('aegis')}
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-md transition-all"
+              >
+                Inquire Tenanted Shield
+              </button>
+            </div>
+
+            {/* Multi-Asset Portfolio */}
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 font-heading">Multi-Asset Portfolio</h3>
+                <p className="text-xs text-slate-500 mt-1">For NRIs with 2+ properties across multiple Indian cities.</p>
+                <div className="my-5">
+                  <div className="text-3xl font-black text-[#0D3B66]">Custom <span className="text-xs font-normal text-slate-500">Volume Rate</span></div>
+                  <div className="text-xs text-slate-400">Dedicated Portfolio Asset Director</div>
+                </div>
+                <ul className="space-y-2 text-xs text-slate-600 mb-6">
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Multi-city consolidated dashboard</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Annual FEMA Form 15CA/15CB package</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Priority turn-around on tenant transitions</li>
+                </ul>
+              </div>
+              <button
+                onClick={() => onOpenConsultModal('aegis')}
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors"
+              >
+                Inquire Portfolio
+              </button>
+            </div>
+
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0073B7] hover:underline"
+            >
+              <span>Calculate exact rental yield and net savings on our Full Pricing Page</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
+      {/* =========================================================================
+          READ MORE DETAIL MODAL (REAL ESTATE AUDIT CRITERIA & LEGAL PROTOCOLS)
+          ========================================================================= */}
+      {readMoreModalData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col">
+            
+            {/* Modal Header */}
+            <div className="p-6 bg-gradient-to-r from-sky-50 via-white to-sky-50 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-100 text-[#0073B7] flex items-center justify-center">
+                  <readMoreModalData.icon className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase text-[#0073B7] tracking-wider">
+                    {readMoreModalData.badge}
+                  </span>
+                  <h3 className="text-lg font-black text-[#0D3B66] font-heading">
+                    {readMoreModalData.name}
+                  </h3>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setReadMoreModalData(null)}
+                className="p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto space-y-5 text-xs sm:text-sm text-slate-700">
+              
+              <div>
+                <h4 className="font-extrabold text-slate-900 mb-1 text-sm">Discipline Overview &amp; Objective</h4>
+                <p className="text-slate-600 leading-relaxed">{readMoreModalData.details.overview}</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-sky-50/70 border border-sky-200/80 space-y-2">
+                <div className="font-black text-[#0073B7] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Institutional Operational Protocols:</span>
+                </div>
+                <ul className="space-y-1.5 pl-1">
+                  {readMoreModalData.details.protocols.map((p, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0073B7] mt-2 shrink-0" />
+                      <span className="text-slate-700 font-medium">{p}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-extrabold text-slate-900 mb-1 text-sm">Real Estate Developer Benchmark Standards</h4>
+                <p className="text-slate-600 leading-relaxed">{readMoreModalData.details.benchmarkStandards}</p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-100 border border-slate-200">
+                <span className="font-bold text-slate-800 block mb-0.5">What the Overseas Landlord Receives:</span>
+                <p className="text-slate-600">{readMoreModalData.details.whatNriReceives}</p>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
+              <button
+                onClick={() => setReadMoreModalData(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-100"
+              >
+                Close Details
+              </button>
+              <button
+                onClick={() => {
+                  setReadMoreModalData(null);
+                  onOpenConsultModal('aegis');
+                }}
+                className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#0073B7] hover:bg-[#0D3B66] shadow-sm flex items-center gap-1.5"
+              >
+                <span>Request Asset Assessment</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

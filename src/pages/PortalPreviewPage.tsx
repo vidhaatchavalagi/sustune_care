@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Building2, 
   HeartHandshake, 
@@ -22,7 +23,8 @@ import {
   Lock,
   Sparkles,
   ShieldAlert,
-  Bell
+  Bell,
+  ArrowLeft
 } from 'lucide-react';
 import { SAMPLE_VITALS, SAMPLE_DOCTOR_VISIT, SAMPLE_INSPECTION_REPORT } from '../data/mockData';
 
@@ -57,6 +59,17 @@ export const PortalPreviewPage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
+        {/* Back to Home Breadcrumb */}
+        <div className="mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#0D3B66] bg-white hover:bg-[#0073B7] hover:text-white transition-all shadow-xs border border-slate-200 group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span>&larr; Back to Home</span>
+          </Link>
+        </div>
+
         {/* Top Portal Banner with luxury dark glass */}
         <div className="mb-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#0D3B66] via-[#082542] to-[#041021] text-white border border-[#C99738]/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
           {/* Subtle top light shimmer */}

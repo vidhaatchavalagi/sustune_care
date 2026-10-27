@@ -11,6 +11,7 @@ import { NriQuickDesk } from './components/common/NriQuickDesk';
 import { HomePage } from './pages/HomePage';
 import { AegisPage } from './pages/AegisPage';
 import { SparshPage } from './pages/SparshPage';
+import { PricingPage } from './pages/PricingPage';
 import { PortalPreviewPage } from './pages/PortalPreviewPage';
 import { ContactPage } from './pages/ContactPage';
 
@@ -72,6 +73,14 @@ export default function App() {
                   <SparshPage
                     onOpenConsultModal={handleOpenConsultModal}
                     onOpenVideoModal={handleOpenVideoModal}
+                  />
+                }
+              />
+              <Route
+                path="/pricing"
+                element={
+                  <PricingPage
+                    onOpenConsultModal={handleOpenConsultModal}
                   />
                 }
               />
