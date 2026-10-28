@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Globe2
 } from 'lucide-react';
+
 // Official crisp WhatsApp vector icon
 const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg 
@@ -37,13 +38,17 @@ export const Footer: React.FC = () => {
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 bg-white rounded-xl p-1.5 flex items-center justify-center shadow-md border border-[#C99738]/40">
-                <img src="/brand/sustune_emblem_standalone.svg" alt="Sustune Logo" className="w-full h-full object-contain" />
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 bg-white rounded-xl p-1.5 flex items-center justify-center shadow-md border border-[#C99738]/40 shrink-0">
+                <img src="/brand/sustune_emblem_standalone.svg" alt="SustuneCare Logo" className="w-full h-full object-contain" />
               </div>
               <div>
-                <span className="text-xl font-black text-white font-heading tracking-tight">SUSTUNE </span>
-                <span className="text-xl font-black text-[#C99738] font-heading tracking-tight">CARE</span>
+                <span className="text-2xl font-black text-white font-heading tracking-tight block">
+                  SustuneCare
+                </span>
+                <span className="text-[10px] text-[#C99738] font-bold uppercase tracking-wider block">
+                  Dual-Shield NRI Stewardship
+                </span>
               </div>
             </div>
 
@@ -68,7 +73,7 @@ export const Footer: React.FC = () => {
 
             <div className="pt-2">
               <a
-                href="https://wa.me/918007878863?text=Hi%20Sustune%20Care%2C%20I%20am%20an%20NRI%20reaching%20out%20from%20the%20website."
+                href="https://wa.me/918007878863?text=Hi%20SustuneCare%2C%20I%20am%20an%20NRI%20reaching%20out%20from%20the%20website."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-md transition-all cursor-pointer"
@@ -77,22 +82,6 @@ export const Footer: React.FC = () => {
                 <span>Connect via WhatsApp NRI Desk</span>
               </a>
             </div>
-          </div>
-
-          {/* Aegis Property Shield */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-black text-[#C99738] tracking-wider uppercase flex items-center gap-1.5">
-              <Building2 className="w-4 h-4 text-[#0073B7]" />
-              <span>Aegis Property</span>
-            </h4>
-            <ul className="space-y-2 text-xs text-slate-300">
-              <li><Link to="/aegis" className="hover:text-white transition-colors">Corporate Tenant Scouting &amp; KYC</Link></li>
-              <li><Link to="/aegis" className="hover:text-white transition-colors">Rent Escrow &amp; Repatriation</Link></li>
-              <li><Link to="/aegis" className="hover:text-white transition-colors">80-Point Inspection Reports</Link></li>
-              <li><Link to="/aegis" className="hover:text-white transition-colors">Turnkey Maintenance &amp; Fit-outs</Link></li>
-              <li><Link to="/aegis" className="hover:text-white transition-colors">Khata Mutation &amp; Property Tax</Link></li>
-              <li><Link to="/aegis" className="hover:text-white transition-colors">TDS Form 15CA / 15CB Guidance</Link></li>
-            </ul>
           </div>
 
           {/* Sparsh Parental Healthcare */}
@@ -107,7 +96,23 @@ export const Footer: React.FC = () => {
               <li><Link to="/sparsh" className="hover:text-white transition-colors">Routine Vitals Telemetry</Link></li>
               <li><Link to="/sparsh" className="hover:text-white transition-colors">Doorstep Medicine Replenishment</Link></li>
               <li><Link to="/sparsh" className="hover:text-white transition-colors">Bedside Warm Companionship</Link></li>
-              <li><Link to="/sparsh" className="hover:text-white transition-colors">NABH Hospital Partner Network</Link></li>
+              <li><Link to="/sparsh" className="hover:text-white transition-colors">Apollo &amp; Fortis Hospital Network</Link></li>
+            </ul>
+          </div>
+
+          {/* Aegis Property Shield */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-black text-[#C99738] tracking-wider uppercase flex items-center gap-1.5">
+              <Building2 className="w-4 h-4 text-[#0073B7]" />
+              <span>Aegis Property</span>
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300">
+              <li><Link to="/aegis" className="hover:text-white transition-colors">Corporate Tenant Scouting &amp; KYC</Link></li>
+              <li><Link to="/aegis" className="hover:text-white transition-colors">Rent Escrow &amp; Repatriation</Link></li>
+              <li><Link to="/aegis" className="hover:text-white transition-colors">80-Point Inspection Reports</Link></li>
+              <li><Link to="/aegis" className="hover:text-white transition-colors">Turnkey Maintenance &amp; Fit-outs</Link></li>
+              <li><Link to="/aegis" className="hover:text-white transition-colors">Khata Mutation &amp; Property Tax</Link></li>
+              <li><Link to="/aegis" className="hover:text-white transition-colors">Form 15CA / 15CB CA Pack</Link></li>
             </ul>
           </div>
 
@@ -176,12 +181,12 @@ export const Footer: React.FC = () => {
         {/* Bottom Legal / Copyright */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
           <div>
-            &copy; {new Date().getFullYear()} Sustune Care Private Limited. All rights reserved.
+            &copy; {new Date().getFullYear()} SustuneCare Private Limited. All rights reserved.
           </div>
           <div className="flex items-center space-x-6 text-[11px]">
-            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy &amp; Health Data Protection</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
             <span className="hover:text-white cursor-pointer transition-colors">Terms of Asset Stewardship</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Security Protocol &amp; SLAs</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Clinical SLA Protocols</span>
           </div>
         </div>
       </div>

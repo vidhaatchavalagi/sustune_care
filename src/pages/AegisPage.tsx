@@ -259,13 +259,13 @@ export const AegisPage: React.FC<AegisPageProps> = ({
 
               {/* Quick Action CTAs */}
               <div className="pt-2 flex flex-wrap items-center gap-3">
-                <button
-                  onClick={() => onOpenConsultModal('aegis')}
+                <a
+                  href="#disciplines-explore"
                   className="px-6 py-3.5 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-[0_8px_20px_rgba(0,115,183,0.3)] transition-all cursor-pointer flex items-center gap-2 group"
                 >
-                  <span>Schedule Free Asset Evaluation</span>
+                  <span>Explore Stewardship Disciplines</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                </a>
 
                 <a
                   href="tel:+918007878863"
@@ -375,7 +375,7 @@ export const AegisPage: React.FC<AegisPageProps> = ({
           REQUIREMENT 2: PRESENT SERVICES AS SHORT BULLET POINTS ON CLICK
           + INCLUDE "READ MORE" LINKS FOR DETAILS
           ========================================================================= */}
-      <section className="py-16 sm:py-20 bg-white border-b border-slate-200">
+      <section id="disciplines-explore" className="py-16 sm:py-20 bg-white border-b border-slate-200 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -483,13 +483,15 @@ export const AegisPage: React.FC<AegisPageProps> = ({
                   <span>Read Full Audit Protocols &rarr;</span>
                 </button>
 
-                <button
-                  onClick={() => onOpenConsultModal('aegis')}
+                <a
+                  href={`https://wa.me/918007878863?text=${encodeURIComponent('Hi Aegis Team, I would like to inquire about the ' + currentService.name + ' discipline for my property in India.')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>Request Asset Evaluation</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                  <WhatsAppIcon className="w-4 h-4 fill-current" />
+                  <span>Enquire via WhatsApp</span>
+                </a>
               </div>
 
             </div>
@@ -565,13 +567,13 @@ export const AegisPage: React.FC<AegisPageProps> = ({
               <span>Filmed on-location in Prestige &amp; Sobha Gated Communities</span>
             </div>
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
+              <Link
+                to="/contact"
                 className="font-bold text-[#C99738] hover:text-amber-300 flex items-center gap-1 cursor-pointer"
               >
-                <span>Request Asset Inspection Portfolio</span>
+                <span>Contact Property Desk</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -606,12 +608,12 @@ export const AegisPage: React.FC<AegisPageProps> = ({
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Key safe-keeping &amp; anti-encroachment</li>
                 </ul>
               </div>
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="w-full py-2.5 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors"
+              <Link
+                to="/contact"
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors text-center block"
               >
                 Inquire Vacant Care
-              </button>
+              </Link>
             </div>
 
             {/* Tenanted Shield (Featured) */}
@@ -632,12 +634,12 @@ export const AegisPage: React.FC<AegisPageProps> = ({
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> 80-point quarterly sensor audits &amp; videos</li>
                 </ul>
               </div>
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-md transition-all"
+              <Link
+                to="/contact"
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#0073B7] to-[#0D3B66] hover:brightness-110 shadow-md transition-all text-center block"
               >
                 Inquire Tenanted Shield
-              </button>
+              </Link>
             </div>
 
             {/* Multi-Asset Portfolio */}
@@ -655,12 +657,12 @@ export const AegisPage: React.FC<AegisPageProps> = ({
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#0073B7]" /> Priority turn-around on tenant transitions</li>
                 </ul>
               </div>
-              <button
-                onClick={() => onOpenConsultModal('aegis')}
-                className="w-full py-2.5 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors"
+              <Link
+                to="/contact"
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-[#0D3B66] bg-slate-100 hover:bg-slate-200 transition-colors text-center block"
               >
                 Inquire Portfolio
-              </button>
+              </Link>
             </div>
 
           </div>
@@ -752,16 +754,15 @@ export const AegisPage: React.FC<AegisPageProps> = ({
               >
                 Close Details
               </button>
-              <button
-                onClick={() => {
-                  setReadMoreModalData(null);
-                  onOpenConsultModal('aegis');
-                }}
+              <a
+                href={`https://wa.me/918007878863?text=${encodeURIComponent('Hi Aegis Team, I would like to inquire about the audit protocols for: ' + readMoreModalData.name)}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#0073B7] hover:bg-[#0D3B66] shadow-sm flex items-center gap-1.5"
               >
-                <span>Request Asset Assessment</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+                <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+                <span>Enquire via WhatsApp</span>
+              </a>
             </div>
 
           </div>

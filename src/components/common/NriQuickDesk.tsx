@@ -15,7 +15,7 @@ import {
 export const NRI_DESK_CONFIG = {
   // Configured WhatsApp concierge line (Verified project number: +91 800 787 8863)
   whatsappNumber: '918007878863',
-  whatsappMessage: 'Hi Sustune Care, I am an NRI reaching out to the 24/7 Emergency Concierge Desk.',
+  whatsappMessage: 'Hi SustuneCare, I am an NRI reaching out to the 24/7 Emergency Concierge Desk.',
   
   // Official hotline vanity display & working tel link
   hotlineDisplay: '+91 800–SUSTUNE',

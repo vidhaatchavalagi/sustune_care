@@ -67,7 +67,7 @@ export const TcoEstimator: React.FC<TcoEstimatorProps> = ({ onOpenConsultModal }
   const annualSavingsUSD = Math.round(netMonthlyUSD * 2.8 * 12);
 
   const getWhatsAppQuoteLink = () => {
-    const text = `Hi Sustune Care,
+    const text = `Hi SustuneCare,
 I used the Diaspora Care Estimator on the website.
 Target Hub: ${selectedCity}
 Selected Division: ${division.toUpperCase()}

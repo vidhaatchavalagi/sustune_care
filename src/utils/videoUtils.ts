@@ -1,5 +1,5 @@
 /**
- * Video Utilities for Sustune Care Media Player
+ * Video Utilities for SustuneCare Media Player
  * Accurate duration formatting, metadata extraction, and orientation detection.
  */
 
@@ -36,7 +36,7 @@ export function formatDuration(seconds: number | null | undefined): string {
 }
 
 /**
- * Fallback baseline metadata for the 4 known Sustune Care video assets.
+ * Fallback baseline metadata for the 4 known SustuneCare video assets.
  * Real verified file values from ffprobe/Shell COM:
  * - aegis_overview.mp4: 38s, 2160x3840 (Portrait)
  * - sparsh_overview.mp4: 46s, 2160x3840 (Portrait)
