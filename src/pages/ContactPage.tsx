@@ -45,7 +45,7 @@ export const ContactPage: React.FC = () => {
   };
 
   const getWhatsAppLink = () => {
-    const text = `Hi SustuneCare NRI Concierge,
+    const text = `Hi Sustune Care NRI Concierge,
 I would like to schedule an NRI consultation.
 Name: ${name || 'an NRI'}
 Resident Country: ${nriCountry}
@@ -279,7 +279,7 @@ Notes: ${notes || 'Looking forward to speaking with a care director.'}`;
                     className="w-full py-4 rounded-xl text-xs sm:text-sm font-black text-white bg-gradient-to-r from-[#0073B7] via-[#0D3B66] to-[#082542] hover:brightness-110 shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Submit Confidential Diaspora Inquiry</span>
+                    <span>Confirm Confidential Consultation Request</span>
                   </button>
                 </div>
 

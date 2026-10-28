@@ -225,7 +225,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={title || 'SustuneCare Video Theater'}
+      aria-label={title || 'Sustune Care Video Theater'}
       className="fixed inset-0 z-50 flex items-center justify-center bg-[#030914]/90 backdrop-blur-xl animate-fadeIn p-3 sm:p-5 select-none"
       style={{
         paddingTop: 'max(14px, env(safe-area-inset-top))',
@@ -330,7 +330,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
           <div className="absolute top-3 left-3 pointer-events-none opacity-80 z-20">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#051326]/75 text-white backdrop-blur-md border border-white/10 shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              SustuneCare Media
+              Sustune Care Media
             </span>
           </div>
         </div>

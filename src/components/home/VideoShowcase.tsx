@@ -125,7 +125,7 @@ export const VideoShowcase: React.FC<VideoShowcaseProps> = ({ onOpenVideoModal }
   const videos: VideoCardItem[] = [
     {
       id: 'v-launch',
-      title: 'SustuneCare Total: The Diaspora Dilemma Solved',
+      title: 'Sustune Care Total: The Diaspora Dilemma Solved',
       category: 'Brand Story',
       src: '/videos/testimonial_nri2.mp4',
       description: 'Understanding why traditional brokers and distant relatives fall short for global NRIs, and how the Dual-Shield framework restores peace of mind.',
@@ -180,7 +180,7 @@ export const VideoShowcase: React.FC<VideoShowcaseProps> = ({ onOpenVideoModal }
             <span>Official Media Vault &bull; Verified Metadata</span>
           </div>
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0D3B66] font-heading tracking-tight">
-            See SustuneCare in Real-World Action
+            See Sustune Care in Real-World Action
           </h2>
           <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed">
             High-definition walkthroughs of our clinical emergency protocols, property inspection technology, and the empathetic companions serving families across India.

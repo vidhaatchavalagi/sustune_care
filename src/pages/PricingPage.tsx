@@ -97,7 +97,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({ onOpenConsultModal }) 
             Transparent Stewardship Fees in <span className="text-[#0073B7]">{currency}</span>
           </h1>
           <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-            Zero hidden broker commissions. Zero contractor markups. Calculate your exact monthly investment and see how SustuneCare saves you thousands over fragmented unorganized vendors.
+            Zero hidden broker commissions. Zero contractor markups. Calculate your exact monthly investment and see how Sustune Care saves you thousands over fragmented unorganized vendors.
           </p>
         </div>
 
@@ -370,16 +370,16 @@ export const PricingPage: React.FC<PricingPageProps> = ({ onOpenConsultModal }) 
 
             {/* CTAs */}
             <div className="pt-4 space-y-3">
-              <Link
-                to="/contact"
+              <button
+                onClick={() => onOpenConsultModal(division)}
                 className="w-full py-3.5 rounded-xl text-xs sm:text-sm font-black text-[#0D3B66] bg-gradient-to-r from-[#F59E0B] via-[#C99738] to-[#F59E0B] hover:brightness-110 shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>Request Custom Retainer Quote</span>
+                <span>Lock In This Rate with Consultation</span>
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
 
               <a
-                href="https://wa.me/918007878863?text=Hi%20SustuneCare%2C%20I%20would%20like%20to%20verify%20pricing%20for%20my%20parents%20and%20property."
+                href="https://wa.me/918007878863?text=Hi%20Sustune%20Care%2C%20I%20would%20like%20to%20verify%20pricing%20for%20my%20parents%20and%20property."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-white/10 hover:bg-white/15 transition-colors flex items-center justify-center gap-2"

@@ -38,7 +38,7 @@ export const HubsMap: React.FC<HubsMapProps> = ({ onOpenConsultModal }) => {
             Direct Physical Field Teams in Top NRI Hometowns
           </h2>
           <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed">
-            Zero third-party broker proxies. SustuneCare operates localized field desks with full-time Property Stewards, licensed electrical/plumbing technicians, and certified Clinical Care Companions.
+            Zero third-party broker proxies. Sustune Care operates localized field desks with full-time Property Stewards, licensed electrical/plumbing technicians, and certified Clinical Care Companions.
           </p>
         </div>
 

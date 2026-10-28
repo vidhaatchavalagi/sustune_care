@@ -116,11 +116,11 @@ const handleTouchEnd = () => {
         <div
           className="absolute w-30 h-30 sm:w-30 sm:h-30 rounded-3xl bg-gradient-to-tr from-[#082542] via-[#0D3B66] to-[#051326] border-2 border-[#C99738]/60 shadow-[0_0_40px_rgba(201,151,56,0.35)] flex items-center justify-center p-3 preserve-3d group cursor-pointer active:scale-95 transition-transform duration-200"
           style={{ transform: 'translateZ(20px)' }}
-          title="SustuneCare Dual-Shield Engine"
+          title="Sustune Care Dual-Shield Engine"
         >
           <img
             src="/brand/sustune_emblem_standalone.svg"
-            alt="SustuneCare Core Emblem"
+            alt="Sustune Care Core Emblem"
             className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform"
           />
           <div className="absolute -bottom-3 px-2 py-0.5 rounded-full bg-[#051326] border border-[#C99738]/50 text-[8px] sm:text-[9px] font-extrabold uppercase text-[#C99738] tracking-widest shadow-md whitespace-nowrap">

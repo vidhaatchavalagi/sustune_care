@@ -35,7 +35,7 @@ export const AnxietyMatrix: React.FC = () => {
           </h2>
 
           <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed">
-            Every NRI lives with a quiet undercurrent of guilt and worry. SustuneCare replaces guesswork and awkward favors from distant relatives with institutional responsibility and heartfelt care.
+            Every NRI lives with a quiet undercurrent of guilt and worry. Sustune Care replaces guesswork and awkward favors from distant relatives with institutional responsibility and heartfelt care.
           </p>
 
           {/* Toggle Tabs */}

@@ -62,7 +62,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   };
 
   const getWhatsAppLink = () => {
-    const text = `Hi SustuneCare NRI Desk,
+    const text = `Hi Sustune Care NRI Desk,
 My name is ${name || 'an NRI'}.
 Resident Country: ${nriCountry}
 Target City in India: ${city}
